@@ -1,0 +1,15 @@
+{
+  "name": "qa-senior-teste-nexdom",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:api": "playwright test tests/api --project=api",
+    "test:ui": "playwright test tests/ui --project=chromium",
+    "test": "npm run test:api && npm run test:ui",
+    "report:open": "playwright show-report",
+    "k6:run": "k6 run k6/load_test.js --out json=k6-results/result.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.36.0"
+  }
+}

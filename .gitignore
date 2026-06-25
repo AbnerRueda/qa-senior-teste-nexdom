@@ -1,0 +1,7 @@
+node_modules/
+.playwright/
+playwright-report/
+k6-results/
+.env
+.vscode/
+npm-debug.log
