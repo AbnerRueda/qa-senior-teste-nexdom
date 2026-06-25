@@ -22,11 +22,11 @@ Estrutura do repositório
 - docs/ (opcional)
 
 Configuração inicial (local)
-1. git clone git@github.com:SEU_USUARIO/qa-senior-challenge.git
-2. cd qa-senior-challenge
-3. cp .env.example .env    # editar se necessário
+1. git clone git@github.com:SEU_USUARIO/qa-senior-teste-nexdom.git
+2. cd qa-senior-teste-nexdom
+3. cp .env.example .env 
 4. npm ci
-5. npx playwright install --with-deps
+5. npx playwright install
 
 Como executar
 - Executar apenas testes de API:
