@@ -1,15 +1,17 @@
 {
-  "name": "qa-senior-teste-nexdom",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "test:api": "playwright test tests/api --project=api",
-    "test:ui": "playwright test tests/ui --project=chromium",
-    "test": "npm run test:api && npm run test:ui",
-    "report:open": "playwright show-report",
-    "k6:run": "k6 run k6/load_test.js --out json=k6-results/result.json"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.36.0"
-  }
+    "name":  "qa-senior-teste-nexdom",
+    "version":  "1.0.0",
+    "private":  true,
+    "scripts":  {
+                    "report:open":  "playwright show-report",
+                    "test:ui":  "playwright test tests/ui --project=chromium",
+                    "test":  "npm run test:api \u0026\u0026 npm run test:ui",
+                    "test:api":  "playwright test tests/api --project=api",
+                    "k6:run":  "powershell -Command \"if (-not (Test-Path .\\\\k6-results)) { New-Item -ItemType Directory -Path .\\\\k6-results | Out-Null }; $ts = (Get-Date).ToString(\u0027yyyyMMdd-HHmmss\u0027); k6 run k6/load_test.js --out json=k6-results/result-$ts.json\""
+                },
+    "devDependencies":  {
+                            "@playwright/test":  "^1.36.0",
+                            "@types/node":  "^26.0.1",
+                            "typescript":  "^6.0.3"
+                        }
 }

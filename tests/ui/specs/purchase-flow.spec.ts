@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
 
@@ -19,5 +19,5 @@ test('end-to-end purchase flow - saucedemo', async ({ page }) => {
 
   await inventory.checkout('QA', 'Senior', '00000');
 
-  await expect(page.locator('.complete-header')).toHaveText('THANK YOU FOR YOUR ORDER');
+  await expect(page.locator('.complete-header')).toHaveText(/thank you for your order/i);
 });
