@@ -1,4 +1,4 @@
-﻿import { Page } from '@playwright/test';
+﻿import { defineConfig, Page } from '@playwright/test';
 export class InventoryPage {
   readonly page: Page;
   readonly itemSelector = '.inventory_item';
@@ -43,17 +43,38 @@ export class InventoryPage {
       await this.page.fill('[data-test="lastName"]', lastName);
       await this.page.fill('[data-test="postalCode"]', postalCode);
       await this.page.click('[data-test="continue"]');
-      // finalizar
       await this.page.click('[data-test="finish"]');
-    } else {
-      // fallback: tentar seletores alternativos
-      if (await this.page.$('#first-name')) {
-        await this.page.fill('#first-name', firstName);
-        await this.page.fill('#last-name', lastName);
-        await this.page.fill('#postal-code', postalCode);
-        await this.page.click('#continue');
-        await this.page.click('#finish');
-      }
     }
   }
 }
+export default defineConfig({
+  testDir: './tests',
+  timeout: 30 * 1000,
+  retries: 0,
+  use: {
+    headless: process.env.HEADLESS !== 'false',
+    screenshot: 'only-on-failure',
+    trace: 'on-first-retry',
+    actionTimeout: 10 * 1000
+  },
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+    { name: 'api', use: {} },
+    // novo projeto para depuração com interface (headed)
+    {
+      name: 'debug',
+      use: {
+        browserName: 'chromium',
+        headless: false,
+        viewport: { width: 1280, height: 800 },
+        launchOptions: { slowMo: 350 }
+      }
+    }
+  ],
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }]
+  ]
+}
+);
+

@@ -6,9 +6,9 @@ export class LoginPage {
   async goto() {
     await this.page.goto(process.env.BASE_URL_UI || 'https://www.saucedemo.com');
   }
-  async login(username: string, password: string) {
-    await this.page.fill('#user-name', username);
-    await this.page.fill('#password', password);
+  async login(standard_user: string, secret_sauce: string) {
+    await this.page.fill('#user-name', standard_user);
+    await this.page.fill('#password', secret_sauce);
     await this.page.click('#login-button');
   }
 }
