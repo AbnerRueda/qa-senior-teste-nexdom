@@ -1,79 +1,113 @@
-# QA Senior Teste Nexdom - Automação (Playwright + k6)
+﻿# QA Senior — Testes automatizados (Playwright + k6)
 
-Visão geral
-Este repositório contém um scaffold de testes automatizados para UI (Playwright) e API (Playwright request) e um teste de performance com k6. Projetado para ser clonado, executado localmente e integrado em CI (GitHub Actions).
+Resumo  
+Este repositório contém um scaffold de testes automatizados para UI, API e performance:
 
-Pré-requisitos
-- Node.js >= 18
-- npm
-- (Opcional) k6 instalado localmente se desejar rodar k6 localmente
+- UI: Playwright Test (Page Object Model)
+- API: Playwright Request
+- Performance: k6
+
+Objetivo: permitir execução local simples, depuração no VS Code e integração contínua (GitHub Actions) com artefatos (relatórios Playwright + k6).
+
+Principais tecnologias
+- Node.js (>= 18)
+- Playwright Test
+- k6
+- Git / GitHub Actions
+
+Requisitos
+- Node.js >= 18 e npm
 - Git
+- (Opcional) k6 instalado localmente para rodar testes de carga
+- VS Code recomendado
 
 Estrutura do repositório
 - tests/
-  - ui/ (POM + specs UI)
-  - api/ (tests API)
-- k6/ (scripts k6)
-- playwright.config.ts
-- package.json
-- .env.example
-- .github/workflows/ci.yml
-- reports/ (gerados)
-- docs/ (opcional)
+  - ui/ — POMs e specs UI
+  - api/ — testes API e schemas
+- k6/ — scripts de carga
+- .github/workflows/ — pipelines CI
+- playwright.config.ts — configuração Playwright
+- package.json — scripts úteis
+- .env.example — variáveis de ambiente
+- k6-results/ — resultados k6 (gerados)
+- reports/ , playwright-report/ — relatórios gerados
+- docs/ — documentação adicional
 
-Configuração inicial (local)
-1. git clone git@github.com:SEU_USUARIO/qa-senior-teste-nexdom.git
-2. cd qa-senior-teste-nexdom
-3. cp .env.example .env 
-4. npm ci
-5. npx playwright install
+Configuração inicial (rápida)
+1. Clonar e abrir no VS Code:
+   git clone git@github.com:SEU_USUARIO/qa-senior-teste-nexdom.git
+   cd qa-senior-teste-nexdom
 
-Como executar
-- Executar apenas testes de API:
+2. Copiar variáveis de ambiente:
+   cp .env.example .env
+   (edite .env para HEADLESS, BASE_URL_UI, BASE_URL_API conforme necessário)
+
+3. Instalar dependências:
+   npm ci
+
+4. Instalar navegadores do Playwright:
+   npx playwright install
+
+Scripts npm úteis
+- npm run test:api — executa testes de API
+- npm run test:ui — executa testes UI (chromium)
+- npm run test — executa ambos (conforme package.json)
+- npm run report:open — abre o último relatório Playwright
+- npm run k6:run — cria k6-results (se necessário) e roda k6 salvando resultado com timestamp
+
+Execução local — exemplos
+- Tests API:
   npm run test:api
 
-- Executar apenas testes UI (headless por padrão):
+- Tests UI (headless por padrão):
   npm run test:ui
+  Para ver o browser: HEADLESS=false em .env
 
-- Executar todos os testes:
-  npm run test
-
-- Abrir relatório Playwright (após execução):
+- Abrir relatório Playwright:
   npm run report:open
+  ou
+  npx playwright show-report
 
-- Executar k6 localmente (requer k6 instalado):
+- Rodar k6 (requer k6 instalado):
   npm run k6:run
+  Resultado salvo em k6-results/result-YYYYMMDD-HHMMSS.json
 
-Configurações úteis
-- HEADLESS: definir HEADLESS=false em .env para ver o browser ao executar UI
-- BASE_URL_UI e BASE_URL_API: sobrescrever para apontar a outros ambientes
+Variáveis de ambiente (.env.example)
+- HEADLESS=true         # false para ver o navegador
+- BASE_URL_UI=http://localhost:3000
+- BASE_URL_API=https://jsonplaceholder.typicode.com
+- OUT_DIR=./k6-results
 
-Decisões e notas importantes
-- Playwright foi escolhido por permitir automação UI e API no mesmo framework, relatórios integrados e execução paralela.
-- URLs públicas: saucedemo.com (UI) e reqres.in (API). Reqres é uma API pública de teste que pode não persistir recursos criados; os testes contêm adaptações/validações considerando isso.
-- POM (Page Object Model) para organizar selectors e ações de UI.
-- Testes de contrato básicos (ex.: verificação de propriedades esperadas) incluídos; para validação mais estrita adicione JSON Schema validation.
+Boas práticas e notas técnicas
+- POM (Page Object Model) organiza selectors e ações de UI.
+- jsonplaceholder é um serviço público de teste — nem sempre persiste POST/PUT. Para CRUD persistente use json-server ou WireMock local.
+- Garanta arquivos em UTF‑8 sem BOM (evita erros de leitura JSON).
+- Para depurar no VS Code, execute sem depurador no terminal quando não for usar breakpoints (evita “Debugger attached.”).
 
 CI (GitHub Actions)
-O workflow em .github/workflows/ci.yml já configura:
-- execução de testes API e UI
-- instalação de browsers Playwright
-- job separado para k6 (publica resultados como artifact)
+- O workflow em .github/workflows/ci.yml inclui jobs para:
+  - instalar dependências e navegadores Playwright
+  - rodar testes API e UI
+  - rodar k6 em job separado e publicar k6-results/ como artifact
 
-Relatórios e artefatos
-- Playwright gera um relatório HTML em playwright-report/ (publicado como artifact no CI).
-- k6 gera JSON em k6-results/ quando executado.
+Resolução de problemas comuns
+- “Unexpected token '﻿'” ao ler package.json: remova BOM e regrave em UTF‑8 sem BOM.
+- “remote origin already exists.”: git remote -v; git remote remove origin; git remote add origin <url>
+- “src refspec main does not match any”: faça commit local e defina branch main antes do push.
+- k6 connectex / WARN Request Failed: problema de rede / VPN / DNS. Teste com Test-NetConnection / curl / Invoke-WebRequest.
 
-Como contribuir / colaborar
-- Crie uma branch com um nome descritivo.
-- Garanta que npm run test passe localmente antes de abrir PR.
-- Inclua testes e atualize README se adicionar dependências.
+Melhorias sugeridas
+- Usar mock local persistente (json-server / WireMock) para CRUD completos.
+- Adicionar validação de contrato (ajv/jsonschema).
+- Gerar HTML do k6 automaticamente e publicar como artifact no CI.
+- Integrar visual-regression (Playwright snapshot / Percy).
+- Integrar métricas com Grafana/InfluxDB para performance contínua.
 
-Possíveis melhorias
-- Adicionar validação de contrato com jsonschema ou ajv.
-- Substituir reqres.in por um mock local com persistência (json-server / WireMock) para testar CRUD completos.
-- Integrar visual regression (Percy / Playwright comparison).
-- Publicar relatórios (GitHub Pages ou serviço de relatórios).
+Como contribuir
+- Crie branch descritiva: feat/<assunto> ou fix/<assunto>
+- Garanta npm run test passe localmente antes de abrir PR
+- Atualize README/docs ao adicionar funcionalidades ou dependências
 
-Contato
-- Autor: (Abner Rueda)
+Autor / Contato
+- Abner Rueda
